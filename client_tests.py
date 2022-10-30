@@ -15,8 +15,8 @@ stats = ['hotspots_quantity',
 
 users_ids = pd.read_csv(os.path.join('data/users_test.csv'))['id']
 
-for stat in stats:
-    for user_id in users_ids.sample(2):
+for user_id in users_ids.sample(2):
+    for stat in stats:
         res = requests.get(BASE.format(stat=stat, user_id=user_id))
         print(res.url)
         pprint(res.json())

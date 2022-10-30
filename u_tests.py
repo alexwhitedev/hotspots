@@ -12,6 +12,7 @@ load_dotenv(os.path.join(BASEDIR, '.env'))
 import unittest
 
 import warnings
+
 warnings.filterwarnings('ignore')
 
 from app.api.user_project_stats import UserProjectStats
@@ -41,12 +42,12 @@ class HotspotsWithPlacesQuantity(UserProjectStatsTests):
     def test1(self):
         user_id = 1118
         res = self.user_stats(user_id).hotspots_with_places_quantity
-        self.assertEqual(res, {'quantity': 3})
+        self.assertEqual(res, {'quantity': 34})
 
     def test2(self):
         user_id = 15505
         res = self.user_stats(user_id).hotspots_with_places_quantity
-        self.assertEqual(res, {'quantity': 411})
+        self.assertEqual(res, {'quantity': 826})
 
 
 class HotspotsDates(UserProjectStatsTests):
@@ -55,19 +56,23 @@ class HotspotsDates(UserProjectStatsTests):
         user_id = 1118
         res = self.user_stats(user_id).hotspots_dates
         self.assertEqual(res,
-                         {"today_date": str(self.today),
-                          "all_time": {"quantity": 42},
-                          "month_ago": {"quantity": 0},
-                          "week_ago": {"quantity": 0}})
+                         {
+                             "today_date": str(self.today),
+                             "all_time": {"quantity": 42},
+                             "month_ago": {"quantity": 0},
+                             "week_ago": {"quantity": 0}
+                         })
 
     def test2(self):
         user_id = 15505
         res = self.user_stats(user_id).hotspots_dates
         self.assertEqual(res,
-                         {'all_time': {'quantity': 1392},
-                          'month_ago': {'quantity': 3},
-                          'today_date': '2022-10-29',
-                          'week_ago': {'quantity': 0}})
+                         {
+                             'all_time': {'quantity': 1392},
+                             'month_ago': {'quantity': 3},
+                             'today_date': str(self.today),
+                             'week_ago': {'quantity': 0}
+                         })
 
 
 class HotspotsScored(UserProjectStatsTests):
@@ -75,17 +80,17 @@ class HotspotsScored(UserProjectStatsTests):
         user_id = 1118
         res = self.user_stats(user_id).hotspots_scored
         self.assertEqual(res,
-                         {"bad_hotspots": {"quantity": 6},
-                          "normal_hotspots": {"quantity": 1},
-                          "good_hotspots": {"quantity": 32}})
+                         {'bad (Score < 0.3)': {'quantity': 6},
+                          'good (Score >= 0.6)': {'quantity': 32},
+                          'normal (0.3 <= Score < 0.6)': {'quantity': 1}})
 
     def test2(self):
         user_id = 15505
         res = self.user_stats(user_id).hotspots_scored
         self.assertEqual(res,
-                         {'bad_hotspots': {'quantity': 470},
-                          'good_hotspots': {'quantity': 468},
-                          'normal_hotspots': {'quantity': 35}})
+                         {'bad (Score < 0.3)': {'quantity': 470},
+                          'good (Score >= 0.6)': {'quantity': 468},
+                          'normal (0.3 <= Score < 0.6)': {'quantity': 35}})
 
 
 class HotspotsConns(UserProjectStatsTests):
@@ -117,7 +122,7 @@ class HotspotsConns(UserProjectStatsTests):
                          {'month_ago': {'>1': {'quantity': 23},
                                         '>5': {'quantity': 0},
                                         '>10': {'quantity': 0}},
-                          'today_date': '2022-10-29',
+                          'today_date': str(self.today),
                           'week_ago': {'>1': {'quantity': 0},
                                        '>5': {'quantity': 0},
                                        '>10': {'quantity': 0}},

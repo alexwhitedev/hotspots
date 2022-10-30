@@ -71,7 +71,7 @@ class UserProjectStats:
         """
         df = self.__hotspots
         df = df[(~df['foursquare_id'].isnull()) | (~df['google_place_id'].isnull())]
-        df = df[~df['deleted_at'].isnull()]
+        df = df[df['deleted_at'].isnull()]
         return {
             'quantity': len(df)
         }
@@ -86,7 +86,7 @@ class UserProjectStats:
         df['created_at'] = pd.to_datetime(df['created_at'])
         result = {
             'today_date': str(Day.today),
-            'all_time': self.__hotspots['id'].nunique(),
+            'all_time': {'quantity': self.__hotspots['id'].nunique()},
         }
         for period in ['month_ago', 'week_ago']:
             result[period] = {'quantity': len(df[df['created_at'].apply(lambda x: x.date()) > getattr(self.__day, period)])}
